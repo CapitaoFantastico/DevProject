@@ -1,0 +1,52 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <!-- Exemplo usando outros temas para meu dialogo  -->
+        <item name="android:alertDialogTheme">@style/AppTheme.Dark.Dialog.Info</item>
+
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <style name="AppTheme.Dark.Dialog.Info" parent="Theme.AppCompat.Dialog">
+        <item name="android:colorAccent">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/primary_info</item>
+    </style>
+
+    <style name="AppTheme.Dark.Dialog.Error" parent="Theme.AppCompat.Dialog">
+        <item name="android:colorAccent">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/primary_error</item>
+    </style>
+
+    <style name="AppTheme.Dark.Dialog.Sucesso" parent="Theme.AppCompat.Dialog">
+        <item name="android:colorAccent">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/primary_sucesso</item>
+    </style>
+
+    <style name="AppTheme.Dark.Dialog.Alerta" parent="Theme.AppCompat.Dialog">
+        <item name="android:colorAccent">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/primary_alert</item>
+    </style>
+
+    <style name="Txt_Test">
+        <item name="android:textSize">@dimen/text_default</item>
+        <item name="android:textColor">@color/colorPrimaryBlack</item>
+        <item name="android:layout_marginBottom">@dimen/margin_widget</item>
+    </style>
+
+    <style name="Edt_Style">
+        <item name="android:textSize">@dimen/text_default</item>
+        <item name="android:textColor">@color/colorPrimaryBlack</item>
+        <item name="android:layout_marginBottom">@dimen/margin_widget</item>
+    </style>
+
+</resources>
