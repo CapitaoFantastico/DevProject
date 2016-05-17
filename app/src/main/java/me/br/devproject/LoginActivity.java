@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import me.br.devproject.bo.LoginBO;
 import me.br.devproject.util.Util;
+import me.br.devproject.validation.LoginValidation;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -19,9 +21,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+    private LoginBO loginBO;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        loginBO = new LoginBO();
 
         sharedPreferences = getPreferences(MODE_PRIVATE);
         String login = sharedPreferences.getString("login", null);
@@ -46,7 +52,14 @@ public class LoginActivity extends AppCompatActivity {
                 String login = edtLogin.getText().toString();
                 String senha = edtSenha.getText().toString();
 
-                boolean isValid = validarCamposLogin(login, senha);
+                LoginValidation validation = new LoginValidation();
+                validation.setActivity(LoginActivity.this);
+                validation.setEdtLogin(edtLogin);
+                validation.setEdtsenha(edtSenha);
+                validation.setLogin(login);
+                validation.setSenha(senha);
+
+                boolean isValid = loginBO.validarCamposLogin(validation);
 
                 if(isValid){
                     //Para Intent informo, onde estou e para onde vou
@@ -59,40 +72,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private boolean validarCamposLogin(String login, String senha){
-
-        boolean resultado = true;
-
-        if(login == null || "".equals(login)){
-            edtLogin.setError("Campo obrigatório!");
-            //Util.showMsgToast(LoginActivity.this, "Campo Login obrigatório!");
-            resultado = false;
-        } else if(login.length() < 3){
-            edtLogin.setError("Campo deve ter no minímo 3 caracteres");
-        }
-
-        if(senha == null || "".equals(senha)){
-            edtSenha.setError("Campo obrigatório!");
-            //Util.showMsgToast(LoginActivity.this, "Campo senha obrigatório!");
-            resultado = false;
-        }
-
-
-        if(resultado){
-            if (!login.equals("admin") || !senha.equals("admin")){
-                Util.showMsgToast(LoginActivity.this, "Login/Senha Inválidos!");
-                resultado = false;
-            } else{
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("login", login);
-                editor.putString("senha", senha);
-                editor.commit();
-            }
-        }
-
-        return resultado;
     }
 
 }
