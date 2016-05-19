@@ -1,8 +1,10 @@
 package me.br.devproject.bo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import me.br.devproject.repository.LoginRepository;
 import me.br.devproject.util.Util;
 import me.br.devproject.validation.LoginValidation;
 
@@ -10,6 +12,14 @@ import me.br.devproject.validation.LoginValidation;
  * Created by ricks on 16/05/2016.
  */
 public class LoginBO {
+
+    public LoginRepository loginRepository;
+
+    //Seto uma configuracao inicial para a classe através do construtor abaixo
+    public LoginBO(Activity activity){
+        loginRepository = new LoginRepository(activity);
+        loginRepository.popularDB();
+    }
 
     public boolean validarCamposLogin(LoginValidation validation){
 
@@ -35,7 +45,7 @@ public class LoginBO {
                 Util.showMsgToast(validation.getActivity(), "Login/Senha Inválidos!");
                 resultado = false;
             } else{
-                SharedPreferences.Editor editor = validation.getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = validation.getActivity().getSharedPreferences("prefs",Context.MODE_PRIVATE).edit();
                 editor.putString("login", validation.getLogin());
                 editor.putString("senha", validation.getSenha());
                 editor.commit();
@@ -43,6 +53,12 @@ public class LoginBO {
         }
 
         return resultado;
+    }
+
+
+    public void deslogar()
+    {
+
     }
 
 }
