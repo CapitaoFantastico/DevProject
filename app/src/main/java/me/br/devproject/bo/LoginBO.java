@@ -18,7 +18,7 @@ public class LoginBO {
     //Seto uma configuracao inicial para a classe através do construtor abaixo
     public LoginBO(Activity activity){
         loginRepository = new LoginRepository(activity);
-        loginRepository.popularDB();
+        loginRepository.listarLogin(activity);
     }
 
     public boolean validarCamposLogin(LoginValidation validation){
