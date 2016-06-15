@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         String senha = sharedPreferences.getString("senha", null);
 
         if(login != null && senha != null){
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            Intent i = new Intent(LoginActivity.this, PessoaActivity.class);
             startActivity(i);
             finish(); //Mata Activity
         }

@@ -41,6 +41,11 @@ public class LoginBO {
 
 
         if(resultado){
+
+            loginRepository.addLogin(validation.getLogin(), validation.getSenha()); //Insere os dados no banco
+            //loginRepository.repository.updateLogin(validation.getLogin(), validation.getSenha()); //Insere os dados no banco
+            //loginRepository.repository.deleteLogin(validation.getLogin(), validation.getSenha()); //Insere os dados no banco
+
             if (!validation.getLogin().equals("admin") || !validation.getSenha().equals("admin")){
                 Util.showMsgToast(validation.getActivity(), "Login/Senha Inválidos!");
                 resultado = false;

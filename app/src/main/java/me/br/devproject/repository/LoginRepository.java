@@ -1,6 +1,7 @@
 package me.br.devproject.repository;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,6 +54,29 @@ public class LoginRepository extends SQLiteOpenHelper {
             String txtID = "ID de Usuario: " + String.valueOf(cursor.getInt(cursor.getColumnIndex("ID_LOGIN")));
             Util.showMsgToast(activity, txtID);
         }
+    }
+
+    public void addLogin(String login, String senha){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("USUARIO", login);
+        contentValues.put("SENHA", senha);
+
+        db.insert("TB_LOGIN", null, contentValues);
+    }
+
+    public void updateLogin(String login, String senha){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("USUARIO", login);
+        contentValues.put("SENHA", senha);
+
+        db.update("TB_LOGIN", contentValues, "ID_LOGIN > 1", null);
+    }
+
+    public void deleteLogin(String login, String senha){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("TB_LOGIN", "USUARIO = ? OR SENHA = ?", new String[] {login, senha});
     }
 
 }
