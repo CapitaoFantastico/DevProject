@@ -103,18 +103,27 @@
             android:layout_height="wrap_content">
         </Spinner>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <Button
             android:id="@+id/btnData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="setDate"
+            android:layout_weight="1"
             android:text="Data"/>
 
         <EditText
             android:id="@+id/edtNasc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:enabled="false"/>
+    </LinearLayout>
 
         <Button
             android:id="@+id/btnEnviar"
