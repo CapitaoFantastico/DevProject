@@ -41,6 +41,7 @@
         <item name="android:textSize">@dimen/text_default</item>
         <item name="android:textColor">@color/colorPrimaryBlack</item>
         <item name="android:layout_marginBottom">@dimen/margin_widget</item>
+        <item name="android:layout_marginTop">@dimen/padding_toast</item>
     </style>
 
     <style name="Edt_Style">
