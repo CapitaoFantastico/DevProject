@@ -1,10 +1,10 @@
 package me.br.devproject;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -14,10 +14,16 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
+import me.br.devproject.entidade.Pessoa;
 import me.br.devproject.entidade.Profissao;
+import me.br.devproject.entidade.Sexo;
+import me.br.devproject.entidade.TipoPessoa;
 import me.br.devproject.fragment.DatePickerFragment;
 import me.br.devproject.util.Mask;
 import me.br.devproject.util.Util;
@@ -25,22 +31,14 @@ import me.br.devproject.util.Util;
 public class PessoaActivity extends AppCompatActivity {
 
     private Spinner spnProfissao;
-
-    private EditText edtCpfCnpj;
-    private EditText edtNasc;
-
-    private RadioGroup rbgCpfCnpj;
-
+    private EditText edtCpfCnpj, edtNasc, edtNome, edtEndereco;
+    private RadioGroup rbgCpfCnpj, rbgSexo;
     //Mapeado apenas um, pois usamos para verificar, se foi o CPF, sei que nao foi o CNPJ e vice-versa
     private RadioButton rbtCpf;
-
-    private TextWatcher cpfMask;
-    private TextWatcher cnpjMask;
-
     private int cpfCnpjSelecionado;
-
     private TextView txtCpfCnpj;
 
+    private TextWatcher cpfMask, cnpjMask;
 
 
     @Override
@@ -54,6 +52,10 @@ public class PessoaActivity extends AppCompatActivity {
         rbtCpf= (RadioButton) findViewById(R.id.rbtCpf);
         txtCpfCnpj = (TextView) findViewById(R.id.txtCpfCnpj);
         edtNasc = (EditText) findViewById(R.id.edtNasc);
+        edtNome = (EditText) findViewById(R.id.edtNome);
+        edtEndereco = (EditText) findViewById(R.id.edtEndereco);
+        rbgSexo= (RadioGroup) findViewById(R.id.rbgSexo);
+
 
 
         cpfMask = Mask.insert("###.###.###-##", edtCpfCnpj);
@@ -129,5 +131,47 @@ public class PessoaActivity extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter(PessoaActivity.this, android.R.layout.simple_spinner_item, profissoes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); //Set Style to Spinner
         spnProfissao.setAdapter(adapter);
+    }
+
+    public void enviarPessoa(View view){
+        montarPessoa();
+    }
+
+    private void montarPessoa(){
+        Pessoa pessoa = new Pessoa();
+        pessoa.setNome(edtNome.getText().toString());
+        pessoa.setEndereco(edtEndereco.getText().toString());
+        pessoa.setCpfCnpj(edtCpfCnpj.getText().toString());
+        switch (rbgCpfCnpj.getCheckedRadioButtonId()){
+            case R.id.rbtCpf:
+                pessoa.setTipoPessoa(TipoPessoa.FISICA);
+                break;
+            case R.id.rbtCnpj:
+                pessoa.setTipoPessoa(TipoPessoa.JURIDICA);
+                break;
+        }
+
+        switch (rbgSexo.getCheckedRadioButtonId()){
+            case R.id.rbtMasculino:
+                pessoa.setSexo(Sexo.MASCULINO);
+                break;
+            case R.id.rbtFeminino:
+                pessoa.setSexo(Sexo.FEMININO);
+                break;
+        }
+
+        Profissao profissao = Profissao.getProfissao(spnProfissao.getSelectedItemPosition());
+        pessoa.setProfissao(profissao);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        try{
+            Date nasc = dateFormat.parse(edtNasc.getText().toString());
+            pessoa.setDtNasc(nasc);
+        } catch(ParseException e){
+            e.printStackTrace();
+        }
+
+        Util.showMsgToast(this, pessoa.toString());
     }
 }
