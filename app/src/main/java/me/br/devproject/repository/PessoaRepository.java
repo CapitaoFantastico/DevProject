@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import me.br.devproject.entidade.Pessoa;
 import me.br.devproject.util.Constantes;
 
 /**
@@ -34,5 +35,9 @@ public class PessoaRepository extends SQLiteOpenHelper {
         query.append(" DT_NASC INTEGER NOT NULL)");
 
         db.execSQL(query.toString());
+    }
+
+    public void salvarPessoa(Pessoa pessoa){
+
     }
 }

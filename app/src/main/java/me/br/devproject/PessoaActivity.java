@@ -25,6 +25,7 @@ import me.br.devproject.entidade.Profissao;
 import me.br.devproject.entidade.Sexo;
 import me.br.devproject.entidade.TipoPessoa;
 import me.br.devproject.fragment.DatePickerFragment;
+import me.br.devproject.repository.PessoaRepository;
 import me.br.devproject.util.Mask;
 import me.br.devproject.util.Util;
 
@@ -40,11 +41,14 @@ public class PessoaActivity extends AppCompatActivity {
 
     private TextWatcher cpfMask, cnpjMask;
 
+    private PessoaRepository pessoaRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pessoa);
+
+        pessoaRepository = new PessoaRepository(this);
 
         spnProfissao = (Spinner) findViewById(R.id.spnProfissao);
         edtCpfCnpj = (EditText) findViewById(R.id.edtCpfCnpj);
@@ -134,10 +138,59 @@ public class PessoaActivity extends AppCompatActivity {
     }
 
     public void enviarPessoa(View view){
-        montarPessoa();
+        Pessoa p = montarPessoa();
+        if(!validarPessoa(p)){
+            pessoaRepository.salvarPessoa(p);
+         Util.showMsgToast(this, "Cadastro OK");
+        }
     }
 
-    private void montarPessoa(){
+    private boolean validarPessoa(Pessoa pessoa){
+        boolean erro = false;
+        if(pessoa.getNome() == null || "".equals(pessoa.getNome())){
+            erro = true;
+            edtNome.setError("Campo Obrigatorio");
+        }
+        if(pessoa.getEndereco() == null || "".equals(pessoa.getEndereco())){
+            erro = true;
+            edtEndereco.setError("Campo Obrigatorio");
+        }
+        if(pessoa.getCpfCnpj() == null || "".equals(pessoa.getCpfCnpj())) {
+            switch (rbgCpfCnpj.getCheckedRadioButtonId()) {
+                case R.id.rbtCpf:
+                    erro = true;
+                    edtCpfCnpj.setError("Campo CPF Obrigatorio");
+                    break;
+                case R.id.rbtCnpj:
+                    erro = true;
+                    edtCpfCnpj.setError("Campo CNPJ Obrigatorio");
+                    break;
+            }
+        } else {
+            switch (rbgCpfCnpj.getCheckedRadioButtonId()) {
+                case R.id.rbtCpf:
+                    if(edtCpfCnpj.getText().length() < 14) {
+                        erro = true;
+                        edtCpfCnpj.setError("Campo CPF deve ter 11 caracteres");
+                    }
+                    break;
+                case R.id.rbtCnpj:
+                    if(edtCpfCnpj.getText().length() < 18) {
+                        erro = true;
+                        edtCpfCnpj.setError("Campo CNPJ deve ter 14 caracteres");
+                    }
+                    break;
+            }
+        }
+
+        if(pessoa.getDtNasc() == null){
+            erro = true;
+            edtNasc.setError("Campo Obrigatorio");
+        }
+        return erro;
+    }
+
+    private Pessoa montarPessoa(){
         Pessoa pessoa = new Pessoa();
         pessoa.setNome(edtNome.getText().toString());
         pessoa.setEndereco(edtEndereco.getText().toString());
@@ -172,6 +225,6 @@ public class PessoaActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Util.showMsgToast(this, pessoa.toString());
+        return pessoa;
     }
 }
