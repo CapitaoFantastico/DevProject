@@ -5,6 +5,14 @@ package me.br.devproject.entidade;
  */
 public enum Sexo {
 
-    FEMININO, MASCULINO
+    FEMININO, MASCULINO;
 
+    public static Sexo getSexo(int pos){
+        for(Sexo sexo : Sexo.values()){
+            if (sexo.ordinal() == pos){
+                return sexo;
+            }
+        }
+        return null;
+    }
 }

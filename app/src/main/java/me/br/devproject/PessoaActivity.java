@@ -1,6 +1,7 @@
 package me.br.devproject;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextWatcher;
@@ -141,7 +142,11 @@ public class PessoaActivity extends AppCompatActivity {
         Pessoa p = montarPessoa();
         if(!validarPessoa(p)){
             pessoaRepository.salvarPessoa(p);
-         Util.showMsgToast(this, "Cadastro OK");
+
+            Intent i = new Intent(this, ListaPessoaActivity.class);
+            startActivity(i);
+            finish();
+            //Util.showMsgToast(this, "Cadastro OK");
         }
     }
 
