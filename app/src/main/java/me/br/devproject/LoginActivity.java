@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         String senha = sharedPreferences.getString("senha", null);
 
         if(login != null && senha != null){
-            Intent i = new Intent(LoginActivity.this, PessoaActivity.class);
+            Intent i = new Intent(LoginActivity.this, DashBoardActivity.class);
             startActivity(i);
             finish(); //Mata Activity
         }
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(isValid){
                     //Para Intent informo, onde estou e para onde vou
                     //Classe login já está instanciada, passo .this, pra onde vou, não esta instanciado, passo .class
-                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent i = new Intent(LoginActivity.this, DashBoardActivity.class);
                     startActivity(i);
                     finish(); //Mata Activity
                 }

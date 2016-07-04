@@ -41,6 +41,55 @@ public class Util {
 
     }
 
+    public static void showMsgConfirm(final Activity activity, String titulo, String txt, TipoMsg tipoMsg, DialogInterface.OnClickListener onClickListener){
+
+        int theme = 0;
+        int icone = 0;
+
+        switch (tipoMsg){
+            case INFO:
+                theme = R.style.AppTheme_Dark_Dialog_Info;
+                icone = R.drawable.info_notification_32;
+                break;
+            case ALERTA:
+                theme = R.style.AppTheme_Dark_Dialog_Alerta;
+                icone = R.drawable.alert_32;
+                break;
+            case ERRO:
+                theme = R.style.AppTheme_Dark_Dialog_Error;
+                icone = R.drawable.error_32;
+                break;
+            case SUCESSO:
+                theme = R.style.AppTheme_Dark_Dialog_Sucesso;
+                icone = R.drawable.ok_32;
+                break;
+        }
+
+        final AlertDialog alertDialog  = new AlertDialog.Builder(activity, theme).create();
+
+        alertDialog.setTitle(titulo);
+        alertDialog.setMessage(txt);
+        alertDialog.setIcon(icone);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"OK",onClickListener);
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Util.showMsgToast(activity, "Teste App 2.0");
+                alertDialog.dismiss();
+            }
+        });
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(); //Objeto genérico para guardar atributos
+        params.copyFrom(alertDialog.getWindow().getAttributes()); //Copia os atributos do Dialog para o params //Objeto que guarda atributos
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        alertDialog.show();
+
+        alertDialog.getWindow().setAttributes(params); //Seto os atributos no dialog exibido
+
+    }
+
     public static void showMsgAlertOK(final Activity activity, String titulo, String txt, TipoMsg tipoMsg){
 
         int theme = 0;
@@ -74,7 +123,7 @@ public class Util {
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Util.showMsgToast(activity, "Teste App 2.0");
+                //Util.showMsgToast(activity, "Teste App 2.0");
                 alertDialog.dismiss();
             }
         });

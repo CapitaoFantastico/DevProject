@@ -74,32 +74,55 @@ public class PessoaRepository extends SQLiteOpenHelper {
 
         while(cursor.moveToNext()){
             Pessoa pessoa = new Pessoa();
-            pessoa.setIdPessoa(cursor.getInt(cursor.getColumnIndex("ID_PESSOA")));
-            pessoa.setNome(cursor.getString(cursor.getColumnIndex("NOME")));
-            pessoa.setEndereco(cursor.getString(cursor.getColumnIndex("ID_PESSOA")));
-            String cpf = cursor.getString(cursor.getColumnIndex("CPF"));
-            String cnpj = cursor.getString(cursor.getColumnIndex("CNPJ"));
-            if(cpf != null){
-                pessoa.setTipoPessoa(TipoPessoa.FISICA);
-                pessoa.setCpfCnpj(cpf);
-            } else {
-                pessoa.setTipoPessoa(TipoPessoa.JURIDICA);
-                pessoa.setCpfCnpj(cnpj);
-            }
-            int sexo = cursor.getInt(cursor.getColumnIndex("SEXO"));
-            pessoa.setSexo(Sexo.getSexo(sexo));
-            int profissao = cursor.getInt(cursor.getColumnIndex("PROFISSAO"));
-            pessoa.setProfissao(Profissao.getProfissao(profissao));
-
-            int time = cursor.getInt(cursor.getColumnIndex("DT_NASC"));
-            Date dtNasc = new Date();
-            dtNasc.setTime(time);
-            pessoa.setDtNasc(dtNasc);
+            setPessoaFromCursor(cursor, pessoa);
 
             lista.add(pessoa);
         }
 
         return lista;
+    }
+
+    public Pessoa consultarPessoaPorID(int idPessoa){
+        Pessoa pessoa = new Pessoa();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query("TB_PESSOA", null, "ID_PESSOA = ?", new String[]{String.valueOf(idPessoa)},null,null,"NOME");
+
+        if(cursor.moveToNext()){
+            setPessoaFromCursor(cursor, pessoa);
+        }
+
+        return pessoa;
+    }
+
+    private void setPessoaFromCursor(Cursor cursor, Pessoa pessoa) {
+        pessoa.setIdPessoa(cursor.getInt(cursor.getColumnIndex("ID_PESSOA")));
+        pessoa.setNome(cursor.getString(cursor.getColumnIndex("NOME")));
+        pessoa.setEndereco(cursor.getString(cursor.getColumnIndex("ID_PESSOA")));
+        String cpf = cursor.getString(cursor.getColumnIndex("CPF"));
+        String cnpj = cursor.getString(cursor.getColumnIndex("CNPJ"));
+        if(cpf != null){
+            pessoa.setTipoPessoa(TipoPessoa.FISICA);
+            pessoa.setCpfCnpj(cpf);
+        } else {
+            pessoa.setTipoPessoa(TipoPessoa.JURIDICA);
+            pessoa.setCpfCnpj(cnpj);
+        }
+        int sexo = cursor.getInt(cursor.getColumnIndex("SEXO"));
+        pessoa.setSexo(Sexo.getSexo(sexo));
+        int profissao = cursor.getInt(cursor.getColumnIndex("PROFISSAO"));
+        pessoa.setProfissao(Profissao.getProfissao(profissao));
+
+        long time = cursor.getLong(cursor.getColumnIndex("DT_NASC"));
+        Date dtNasc = new Date();
+        dtNasc.setTime(time);
+        pessoa.setDtNasc(dtNasc);
+    }
+
+    public void removerPessoaPorId(int idPessoa){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete("TB_PESSOA", "ID_PESSOA = ?", new String[]{String.valueOf(idPessoa)} );
     }
 
 }

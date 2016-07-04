@@ -5,7 +5,13 @@ package me.br.devproject.entidade;
  */
 public enum Sexo {
 
-    FEMININO, MASCULINO;
+    FEMININO("Feminino"), MASCULINO("Masculino");
+
+    private Sexo(String descricao){
+        this.descricao = descricao;
+    }
+
+    private String descricao;
 
     public static Sexo getSexo(int pos){
         for(Sexo sexo : Sexo.values()){
@@ -14,5 +20,9 @@ public enum Sexo {
             }
         }
         return null;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 }

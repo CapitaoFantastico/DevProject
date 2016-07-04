@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".PessoaActivity" />
-        <activity android:name=".ListaPessoaActivity"></activity>
+        <activity android:name=".ListaPessoaActivity" />
+        <activity android:name=".DashBoardActivity"></activity>
     </application>
 
 </manifest>
