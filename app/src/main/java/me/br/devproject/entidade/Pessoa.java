@@ -1,11 +1,12 @@
 package me.br.devproject.entidade;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by HenriqueSouza on 27/06/16.
  */
-public class Pessoa {
+public class Pessoa implements Serializable {
 
     private int idPessoa;
 

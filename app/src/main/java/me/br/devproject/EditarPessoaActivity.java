@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,6 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,16 +31,17 @@ import me.br.devproject.repository.PessoaRepository;
 import me.br.devproject.util.Mask;
 import me.br.devproject.util.Util;
 
-public class PessoaActivity extends AppCompatActivity {
+public class EditarPessoaActivity extends AppCompatActivity {
+
+    private Pessoa pessoa;
 
     private Spinner spnProfissao;
     private EditText edtCpfCnpj, edtNasc, edtNome, edtEndereco;
     private RadioGroup rbgCpfCnpj, rbgSexo;
     //Mapeado apenas um, pois usamos para verificar, se foi o CPF, sei que nao foi o CNPJ e vice-versa
-    private RadioButton rbtCpf;
+    private RadioButton rbtCpf, rbtCnpj, rbtMasc, rbtFem;
     private TextWatcher cpfMask, cnpjMask;
     private TextView txtCpfCnpj;
-
     private int cpfCnpjSelecionado;
 
     private PessoaRepository pessoaRepository;
@@ -48,17 +49,23 @@ public class PessoaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pessoa);
-        getSupportActionBar().setTitle("Cadastro de Pessoa");
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_editar_pessoa);
 
-        pessoaRepository = new PessoaRepository(this);
+        this.pessoaRepository = new PessoaRepository(this);
+
+        getSupportActionBar().setTitle("Editar Pessoa");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        pessoa = (Pessoa) getIntent().getExtras().getSerializable("pessoa");
 
         spnProfissao = (Spinner) findViewById(R.id.spnProfissao);
         edtCpfCnpj = (EditText) findViewById(R.id.edtCpfCnpj);
         rbgCpfCnpj = (RadioGroup) findViewById(R.id.rbgCpfCnpj);
         rbtCpf= (RadioButton) findViewById(R.id.rbtCpf);
+        rbtCnpj= (RadioButton) findViewById(R.id.rbtCnpj);
+        rbtMasc= (RadioButton) findViewById(R.id.rbtMasculino);
+        rbtFem= (RadioButton) findViewById(R.id.rbtFeminino);
         txtCpfCnpj = (TextView) findViewById(R.id.txtCpfCnpj);
         edtNasc = (EditText) findViewById(R.id.edtNasc);
         edtNome = (EditText) findViewById(R.id.edtNome);
@@ -105,8 +112,37 @@ public class PessoaActivity extends AppCompatActivity {
                 }
             }
         });
-
         this.initProfissioes();
+        this.initCampos();
+    }
+
+    private void initCampos(){
+        edtNome.setText(pessoa.getNome());
+        edtNome.setText(pessoa.getNome());
+        edtEndereco.setText(pessoa.getEndereco());
+        edtCpfCnpj.setText(pessoa.getCpfCnpj());
+        switch (pessoa.getTipoPessoa()){
+            case FISICA:
+                txtCpfCnpj.setText("CPF:");
+                rbtCpf.setChecked(true);
+                break;
+            case JURIDICA:
+                txtCpfCnpj.setText("CNPJ:");
+                rbtCnpj.setChecked(true);
+                break;
+        }
+        switch (pessoa.getSexo()){
+            case MASCULINO:
+                rbtMasc.setChecked(true);
+                break;
+            case FEMININO:
+                rbtFem.setChecked(true);
+                break;
+        }
+        spnProfissao.setSelection(pessoa.getProfissao().ordinal());
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        edtNasc.setText(dateFormat.format(pessoa.getDtNasc()));
     }
 
     public void setDate(View view){
@@ -137,21 +173,9 @@ public class PessoaActivity extends AppCompatActivity {
         for(Profissao p : Profissao.values()){
             profissoes.add(p.getDescricao());
         }
-        ArrayAdapter adapter = new ArrayAdapter(PessoaActivity.this, android.R.layout.simple_spinner_item, profissoes);
+        ArrayAdapter adapter = new ArrayAdapter(EditarPessoaActivity.this, android.R.layout.simple_spinner_item, profissoes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); //Set Style to Spinner
         spnProfissao.setAdapter(adapter);
-    }
-
-    public void enviarPessoa(View view){
-        Pessoa p = montarPessoa();
-        if(!validarPessoa(p)){
-            pessoaRepository.salvarPessoa(p);
-
-            Intent i = new Intent(this, ListaPessoaActivity.class);
-            startActivity(i);
-            finish();
-            //Util.showMsgToast(this, "Cadastro OK");
-        }
     }
 
     private boolean validarPessoa(Pessoa pessoa){
@@ -201,6 +225,7 @@ public class PessoaActivity extends AppCompatActivity {
 
     private Pessoa montarPessoa(){
         Pessoa pessoa = new Pessoa();
+        pessoa.setIdPessoa(this.pessoa.getIdPessoa());
         pessoa.setNome(edtNome.getText().toString());
         pessoa.setEndereco(edtEndereco.getText().toString());
         pessoa.setCpfCnpj(edtCpfCnpj.getText().toString());
@@ -237,6 +262,18 @@ public class PessoaActivity extends AppCompatActivity {
         return pessoa;
     }
 
+    public void atualizarPessoa(View view){
+        Pessoa p = montarPessoa();
+        if(!validarPessoa(p)){
+            pessoaRepository.atualizarPessoa(p);
+
+            Intent i = new Intent(this, ListaPessoaActivity.class);
+            startActivity(i);
+            finish();
+            Util.showMsgToast(this, "Atualizacao efetuada com sucesso!");
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -246,5 +283,4 @@ public class PessoaActivity extends AppCompatActivity {
         }
         return true;
     }
-
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,23 +49,31 @@ public class PessoaRepository extends SQLiteOpenHelper {
 
     public void salvarPessoa(Pessoa pessoa){
         SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = getContentValuesPessoa(pessoa);
+
+        db.insert("TB_PESSOA",null,contentValues);
+    }
+
+    @NonNull
+    private ContentValues getContentValuesPessoa(Pessoa pessoa) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("NOME", pessoa.getNome());
         contentValues.put("ENDERECO", pessoa.getEndereco());
-    switch(pessoa.getTipoPessoa()){
-        case FISICA:
-            contentValues.put("CPF", pessoa.getCpfCnpj());
-            break;
+        switch(pessoa.getTipoPessoa()){
+            case FISICA:
+                contentValues.put("CPF", pessoa.getCpfCnpj());
+                contentValues.put("CNPJ", "");
+                break;
 
-        case JURIDICA:
-            contentValues.put("CNPJ", pessoa.getCpfCnpj());
-            break;
-    }
+            case JURIDICA:
+                contentValues.put("CNPJ", pessoa.getCpfCnpj());
+                contentValues.put("CPF", "");
+                break;
+        }
         contentValues.put("SEXO", pessoa.getSexo().ordinal());
         contentValues.put("PROFISSAO", pessoa.getProfissao().ordinal());
         contentValues.put("DT_NASC", pessoa.getDtNasc().getTime());
-
-        db.insert("TB_PESSOA",null,contentValues);
+        return contentValues;
     }
 
     public List<Pessoa> listarPessoas(){
@@ -80,6 +89,12 @@ public class PessoaRepository extends SQLiteOpenHelper {
         }
 
         return lista;
+    }
+
+    public void atualizarPessoa(Pessoa pessoa){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = getContentValuesPessoa(pessoa);
+        db.update("TB_PESSOA", contentValues, "ID_PESSOA = ?", new String[]{String.valueOf(pessoa.getIdPessoa())});
     }
 
     public Pessoa consultarPessoaPorID(int idPessoa){
@@ -98,10 +113,10 @@ public class PessoaRepository extends SQLiteOpenHelper {
     private void setPessoaFromCursor(Cursor cursor, Pessoa pessoa) {
         pessoa.setIdPessoa(cursor.getInt(cursor.getColumnIndex("ID_PESSOA")));
         pessoa.setNome(cursor.getString(cursor.getColumnIndex("NOME")));
-        pessoa.setEndereco(cursor.getString(cursor.getColumnIndex("ID_PESSOA")));
+        pessoa.setEndereco(cursor.getString(cursor.getColumnIndex("ENDERECO")));
         String cpf = cursor.getString(cursor.getColumnIndex("CPF"));
         String cnpj = cursor.getString(cursor.getColumnIndex("CNPJ"));
-        if(cpf != null){
+        if(cpf != null && !"".equals(cpf)){
             pessoa.setTipoPessoa(TipoPessoa.FISICA);
             pessoa.setCpfCnpj(cpf);
         } else {
