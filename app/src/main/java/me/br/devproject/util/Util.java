@@ -20,19 +20,13 @@ public class Util {
 
     public static void showMsgToast(Activity activity, String txt)   {
 
-        //Parametro desse metodo - Onde quero exibir este Toast
-
-        //Quando precisamos inflar - Quando precisamos de um XML de Layout do corrente usado na tela
-        //1 - Layout XML / 2 - ID do Layout (converto pra Viewgroup)
         LayoutInflater inflater = activity.getLayoutInflater();
         View layoutToast = inflater.inflate(R.layout.toast_template, (ViewGroup) activity.findViewById(R.id.layoutToast));
 
-        //Crio um TextView na tela referenciando o criado no XML pra poder altera-lo em tempo de execução
         TextView txtToast = (TextView) layoutToast.findViewById(R.id.txtToast);
         txtToast.setText(txt);
 
-        //Exibindo Alerta tipo Toast
-        //Toast toast = Toast.makeText(this, "Teste App 1.0", Toast.LENGTH_LONG); //Alerta comum
+
         Toast toast = new Toast(activity);
         toast.setView(layoutToast);
         toast.setGravity(Gravity.BOTTOM, 0,0);
