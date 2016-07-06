@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //loginBO = new LoginBO(this);
+        loginBO = new LoginBO(this);
 
         sharedPreferences = getSharedPreferences("prefs",MODE_PRIVATE);
         String login = sharedPreferences.getString("login", null);

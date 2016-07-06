@@ -28,6 +28,9 @@ public class PessoaRepository extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+
+
     }
 
     @Override

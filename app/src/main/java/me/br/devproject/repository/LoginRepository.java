@@ -32,6 +32,20 @@ public class LoginRepository extends SQLiteOpenHelper {
 
         popularDB(db);
 
+
+        StringBuilder queryPessoa = new StringBuilder();
+        queryPessoa.append("CREATE TABLE IF NOT EXISTS TB_PESSOA( ");
+        queryPessoa.append(" ID_PESSOA INTEGER PRIMARY KEY AUTOINCREMENT,");
+        queryPessoa.append(" NOME TEXT(30) NOT NULL,");
+        queryPessoa.append(" ENDERECO TEXT(50),");
+        queryPessoa.append(" CPF TEXT(14),");
+        queryPessoa.append(" CNPJ TEXT(14),");
+        queryPessoa.append(" SEXO INTEGER(1) NOT NULL,");
+        queryPessoa.append(" PROFISSAO INTEGER(3) NOT NULL,");
+        queryPessoa.append(" DT_NASC INTEGER NOT NULL)");
+
+        db.execSQL(queryPessoa.toString());
+
     }
 
     @Override
